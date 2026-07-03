@@ -1,4 +1,4 @@
-# todo-app (to be renamed to taskwave)
+# Taskwave
 task logger and progress tracker
 
 ## To View
