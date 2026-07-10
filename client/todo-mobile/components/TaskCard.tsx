@@ -1,7 +1,12 @@
-import { useRouter } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { useAuth } from "../contexts/AuthContext";
 import { updateTask, deleteTask } from "../lib/db";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
+import { scheduleOnRN } from "react-native-worklets";
 
 export interface Task {
   taskId: number;
@@ -29,7 +34,23 @@ export default function TaskCard({
     : `${task.minutes} minutes`;
 
   const { token } = useAuth();
-  const router = useRouter();
+  const { height, width } = useWindowDimensions();
+  const translateX = useSharedValue(0);
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value }],
+  }));
+
+  const slideOut = (direction: "left" | "right", callback: () => void) => {
+    // include callback to order status edits after animations
+    // https://docs.swmansion.com/react-native-reanimated/docs/2.x/: animations are asynchronous
+    translateX.value = withTiming(
+      direction === "left" ? -width : width,
+      { duration: 250 },
+      (finished) => {
+        if (finished) scheduleOnRN(callback);
+      }
+    );
+  };
 
   const handleStatusChange = async (forward: boolean) => {
     const currentStatusId = STATUS_ORDER.indexOf(task.status);
@@ -40,7 +61,7 @@ export default function TaskCard({
     try {
       if (!token) {
         await updateTask(updatedTask);
-        onStatusChange(updatedTask);
+        slideOut(forward ? "right" : "left", () => onStatusChange(updatedTask));
         return;
       }
       const response = await fetch(
@@ -58,7 +79,7 @@ export default function TaskCard({
         console.error("Unexpected status:", response.status);
         return;
       }
-      onStatusChange(updatedTask);
+      slideOut(forward ? "right" : "left", () => onStatusChange(updatedTask));
     } catch (e) {
       console.error(e);
     }
@@ -93,10 +114,7 @@ export default function TaskCard({
   };
 
   return (
-    <Pressable
-      style={({ pressed }) => [styles.card, pressed && { backgroundColor: "rgba(80, 185, 255, 0.9)" }]}
-      onLongPress={() => router.push({ pathname: "/task-form", params: { task: JSON.stringify(task) } })}
-    >
+    <Animated.View style={[styles.card, animatedStyle]}>
       <Text style={styles.title}>{task.title}</Text>
       <Text style={styles.notes}>{task.description}</Text>
       <Text style={styles.time}>Time: {time}</Text>
@@ -111,7 +129,7 @@ export default function TaskCard({
           <Text style={styles.buttonText}>x</Text>
         </Pressable>
       </View>
-    </Pressable>
+    </Animated.View>
   );
 }
 
