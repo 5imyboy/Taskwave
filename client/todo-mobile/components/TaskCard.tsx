@@ -60,24 +60,25 @@ export default function TaskCard({
     const updatedTask = { ...task, status: STATUS_ORDER[newStatusId] };
     try {
       if (!token) {
+        // local update
         await updateTask(updatedTask);
-        slideOut(forward ? "right" : "left", () => onStatusChange(updatedTask));
-        return;
-      }
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_API_URL}/task/update/${task.taskId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-          },
-          body: JSON.stringify(updatedTask),
+      } else {
+        // server update
+        const response = await fetch(
+          `${process.env.EXPO_PUBLIC_API_URL}/task/update/${task.taskId}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`,
+            },
+            body: JSON.stringify(updatedTask),
+          }
+        );
+        if (response.status !== 204) {
+          console.error("Unexpected status:", response.status);
+          return;
         }
-      );
-      if (response.status !== 204) {
-        console.error("Unexpected status:", response.status);
-        return;
       }
       slideOut(forward ? "right" : "left", () => onStatusChange(updatedTask));
     } catch (e) {
@@ -88,24 +89,25 @@ export default function TaskCard({
   const handleDelete = async () => {
     try {
       if (!token) {
+        // local delete
         await deleteTask(task.taskId);
-        onDelete(task.taskId);
-        return;
-      }
-      const response = await fetch(
-        `${process.env.EXPO_PUBLIC_API_URL}/task/delete/${task.taskId}`,
-        {
-          method: "DELETE",
-          headers: { "Authorization": `Bearer ${token}` },
+      } else {
+        // server delete
+        const response = await fetch(
+          `${process.env.EXPO_PUBLIC_API_URL}/task/delete/${task.taskId}`,
+          {
+            method: "DELETE",
+            headers: { "Authorization": `Bearer ${token}` },
+          }
+        );
+        if (response.status === 404) {
+          console.error("Task not found:", task.taskId);
+          return;
         }
-      );
-      if (response.status === 404) {
-        console.error("Task not found:", task.taskId);
-        return;
-      }
-      if (response.status !== 204) {
-        console.error("Unexpected status:", response.status);
-        return;
+        if (response.status !== 204) {
+          console.error("Unexpected status:", response.status);
+          return;
+        }
       }
       onDelete(task.taskId);
     } catch (e) {
