@@ -22,7 +22,7 @@ public class JwtConverter {
     }
     // 2. "Configurable" constants
     private final String ISSUER = "bug-todo";
-    private final int EXPIRATION_MINUTES = 1440; // 24 hours
+    private final int EXPIRATION_MINUTES = 1440 * 3; // 24 hours
     private final int EXPIRATION_MILLIS = EXPIRATION_MINUTES * 60 * 1000;
 
     public String getTokenFromUser(User user) {
