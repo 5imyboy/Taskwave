@@ -40,7 +40,7 @@ export default function Login() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View style={styles.container}>
-        <Text style={styles.title}>Todo List</Text>
+        <Text style={styles.title}>Taskwave</Text>
         <Text style={styles.subtitle}>Login:</Text>
 
         {errors.length > 0 && (
