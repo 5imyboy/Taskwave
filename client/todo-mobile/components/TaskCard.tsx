@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { useAuth } from "../contexts/AuthContext";
+import { useRouter } from "expo-router";
 import { updateTask, deleteTask } from "../lib/db";
 import Animated, {
   useSharedValue,
@@ -34,7 +35,8 @@ export default function TaskCard({
     : `${task.minutes} minutes`;
 
   const { token } = useAuth();
-  const { height, width } = useWindowDimensions();
+  const { width } = useWindowDimensions();
+  const router = useRouter();
   const translateX = useSharedValue(0);
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: translateX.value }],
@@ -86,6 +88,13 @@ export default function TaskCard({
     }
   };
 
+  const handleEditTask = () => {
+    router.push({
+      pathname: "/task-form",
+      params: { task: JSON.stringify(task) }
+    })
+  }
+
   const handleDelete = async () => {
     try {
       if (!token) {
@@ -116,32 +125,41 @@ export default function TaskCard({
   };
 
   return (
-    <Animated.View style={[styles.card, animatedStyle]}>
-      <Text style={styles.title}>{task.title}</Text>
-      <Text style={styles.notes}>{task.description}</Text>
-      <Text style={styles.time}>Time: {time}</Text>
-      <View style={styles.buttonRow}>
-        <Pressable style={styles.button} onPress={() => handleStatusChange(false)}>
-          <Text style={styles.buttonText}>←</Text>
-        </Pressable>
-        <Pressable style={styles.button} onPress={() => handleStatusChange(true)}>
-          <Text style={styles.buttonText}>→</Text>
-        </Pressable>
-        <Pressable style={[styles.button, styles.deleteButton]} onPress={handleDelete}>
-          <Text style={styles.buttonText}>x</Text>
-        </Pressable>
-      </View>
+    <Animated.View style={[styles.cardDimensions, animatedStyle]}>
+      <Pressable style={({ pressed }) => [styles.card, pressed && styles.cardPressed]} onLongPress={handleEditTask}>
+        <Text style={styles.title}>{task.title}</Text>
+        <Text style={styles.notes}>{task.description}</Text>
+        <Text style={styles.time}>Time: {time}</Text>
+        <View style={styles.buttonRow}>
+          <Pressable style={styles.button} onPress={() => handleStatusChange(false)}>
+            <Text style={styles.buttonText}>←</Text>
+          </Pressable>
+          <Pressable style={styles.button} onPress={() => handleStatusChange(true)}>
+            <Text style={styles.buttonText}>→</Text>
+          </Pressable>
+          <Pressable style={[styles.button, styles.deleteButton]} onPress={handleDelete}>
+            <Text style={styles.buttonText}>x</Text>
+          </Pressable>
+        </View>
+      </Pressable>
     </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
-  card: {
-    backgroundColor: "rgba(142, 214, 255, 0.81)",
-    borderRadius: 12,
-    padding: 12,
+  cardDimensions: {
     marginVertical: 6,
     marginHorizontal: 12,
+  },
+  card: {
+    backgroundColor: "rgba(134, 210, 255, 0.8)",
+    boxShadow: "0px 0px 10px rgb(134, 210, 255)",
+    borderRadius: 12,
+    padding: 12,
+  },
+  cardPressed: {
+    backgroundColor: "rgba(174, 225, 255, 0.8)",
+    boxShadow: "0px",
   },
   title: {
     fontSize: 18,
