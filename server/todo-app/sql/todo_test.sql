@@ -26,18 +26,20 @@ delimiter //
 create procedure set_good_known_state()
 begin
     -- Resets the auto_increment value.
-	truncate table task;
-    truncate table `user`;
-    
+    SET FOREIGN_KEY_CHECKS = 0;
+    TRUNCATE TABLE task;
+    TRUNCATE TABLE `user`;
+    SET FOREIGN_KEY_CHECKS = 1;
+
+	insert into `user`
+    values
+		(1, "testOne@email.com", "$2a$10$dos11HQE1eDwpfBaXfmMiusFRSSPOrYZejckqkV85pgItNsrbn59a"), ## hash for 'password'
+        (2, "testTwo@email.com", "$2a$10$CgwtnVZvMAMA4zXiJ.B8a.fogAnhIYepMc/zxsJj7Z0mBDEMfG9fS"); ## hash for 'password2'
+
     insert into task
     values
 		(1, 1, "Clean Room", "Make the bed and vacumm the floor", 'NOT_STARTED', 2, 0),
 		(2, 1, "Brush Teeth", "Brush for at least 3 minutes!", 'IN_PROGRESS', 0, 10),
 		(3, 1, "Wake Up", "", 'COMPLETED', 0, 5);
-        
-	insert into `user`
-    values
-		(1, "testOne@email.com", "$2a$10$dos11HQE1eDwpfBaXfmMiusFRSSPOrYZejckqkV85pgItNsrbn59a"), ## hash for 'password'
-        (2, "testTwo@email.com", "$2a$10$CgwtnVZvMAMA4zXiJ.B8a.fogAnhIYepMc/zxsJj7Z0mBDEMfG9fS"); ## hash for 'password2'
 end //
 delimiter ;
