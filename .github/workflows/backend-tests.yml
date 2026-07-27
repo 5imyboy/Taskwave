@@ -1,0 +1,50 @@
+name: Backend Tests
+
+on:
+  push:
+    paths:
+      - 'server/todo-app/**'
+  pull_request:
+    paths:
+      - 'server/todo-app/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Initialize test database
+        run: |
+          mysql -h 127.0.0.1 -u root -proot < server/todo-app/sql/todo_test.sql
+          mysql -h 127.0.0.1 -u root -proot -e "CREATE USER 'todo_test_user'@'%' IDENTIFIED BY 'testpassword123'; GRANT ALL PRIVILEGES ON todo_test.* TO 'todo_test_user'@'%'; FLUSH PRIVILEGES;"
+
+      - name: Run tests
+        working-directory: server/todo-app
+        run: ./mvnw test
+        env:
+          DB_URL: jdbc:mysql://127.0.0.1:3306/todo_test
+          DB_USERNAME: todo_test_user
+          DB_PASSWORD: testpassword123
+          JWT_SECRET: ${{ secrets.TEST_JWT_SECRET }}
