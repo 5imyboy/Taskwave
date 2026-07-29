@@ -89,7 +89,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgb(92, 195, 255)",
     justifyContent: "center",
     alignItems: "center",
-    marginLeft: 8,
   },
   buttonPressed: {
     boxShadow: "0px",

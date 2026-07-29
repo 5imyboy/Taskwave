@@ -1,7 +1,7 @@
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { Button, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View } from "react-native";
+import { KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 export default function Login() {
 
@@ -68,7 +68,12 @@ export default function Login() {
             secureTextEntry
           />
           <View style={styles.buttonRow}>
-            <Button title="Login" onPress={handleSubmit} />
+            <Pressable
+              style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
+              onPress={handleSubmit}
+            >
+              <Text style={styles.buttonText}>Login</Text>
+            </Pressable>
             <Link href="/register">New User?</Link>
           </View>
         </View>
@@ -86,4 +91,24 @@ const styles = StyleSheet.create({
   form: { width: "100%", borderWidth: 1, borderColor: "#d1d5db", borderRadius: 6, padding: 16 },
   input: { borderWidth: 1, borderColor: "#d1d5db", borderRadius: 4, paddingHorizontal: 12, paddingVertical: 8, marginTop: 4, marginBottom: 16 },
   buttonRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  button: {
+    alignSelf: "flex-start",
+    paddingLeft: 10,
+    paddingRight: 10,
+    height: 36,
+    borderRadius: 10,
+    boxShadow: "0px 0px 5px rgb(92, 195, 255)",
+    backgroundColor: "rgb(92, 195, 255)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonPressed: {
+    boxShadow: "0px",
+    backgroundColor: "rgb(144, 214, 255)",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 14,
+    fontWeight: "600",
+  },
 });
