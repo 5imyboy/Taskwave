@@ -54,7 +54,7 @@ export default function TabLayout() {
           style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
           onPress={token ? handleLogout : handleLogin}
         >
-          <Text style={styles.authButtonText}>{token ? "Logout" : "Sign In"}</Text>
+          <Text style={styles.authButtonText}>{token ? "Logout" : "Login"}</Text>
         </Pressable>
         <Pressable
           style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
