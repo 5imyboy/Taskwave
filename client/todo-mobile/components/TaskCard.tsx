@@ -8,6 +8,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
+import { getNextStatus } from "../lib/taskStatus";
 
 export interface Task {
   taskId: number;
@@ -18,8 +19,6 @@ export interface Task {
   hours: number;
   minutes: number;
 }
-
-const STATUS_ORDER = ["NOT_STARTED", "IN_PROGRESS", "COMPLETED"];
 
 export default function TaskCard({
   task,
@@ -55,11 +54,10 @@ export default function TaskCard({
   };
 
   const handleStatusChange = async (forward: boolean) => {
-    const currentStatusId = STATUS_ORDER.indexOf(task.status);
-    const newStatusId = forward ? currentStatusId + 1 : currentStatusId - 1;
-    if (newStatusId < 0 || newStatusId >= STATUS_ORDER.length) return;
+    const nextStatus = getNextStatus(task.status, forward);
+    if (!nextStatus) return;
 
-    const updatedTask = { ...task, status: STATUS_ORDER[newStatusId] };
+    const updatedTask = { ...task, status: nextStatus };
     try {
       if (!token) {
         // local update
