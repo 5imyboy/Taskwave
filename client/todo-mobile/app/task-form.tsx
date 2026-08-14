@@ -12,6 +12,7 @@ import {
   View,
 } from "react-native";
 import { Task } from "../components/TaskCard";
+import { commonStyles } from "../styles/common";
 
 export default function TaskForm() {
   const router = useRouter();
@@ -75,13 +76,13 @@ export default function TaskForm() {
       <Stack.Screen options={{ title: isNewTask ? "Add Task" : "Edit Task" }} />
 
       {errors.length > 0 && (
-        <View style={styles.errorBox}>
-          {errors.map(e => <Text key={e} style={styles.errorText}>{e}</Text>)}
+        <View style={commonStyles.errorBox}>
+          {errors.map(e => <Text key={e} style={commonStyles.errorText}>{e}</Text>)}
         </View>
       )}
 
       <TextInput
-        style={styles.titleInput}
+        style={[commonStyles.input, styles.titleInput]}
         placeholder="Title"
         value={form.title}
         onChangeText={text => setForm(prev => ({ ...prev, title: text }))}
@@ -89,7 +90,7 @@ export default function TaskForm() {
       />
 
       <TextInput
-        style={styles.notesInput}
+        style={[commonStyles.input, styles.notesInput]}
         placeholder="Notes"
         value={form.description}
         onChangeText={text => setForm(prev => ({ ...prev, description: text }))}
@@ -100,7 +101,7 @@ export default function TaskForm() {
 
       <View style={styles.timeRow}>
         <TextInput
-          style={styles.timeInput}
+          style={[commonStyles.input, styles.timeInput]}
           placeholder={isHours ? "Hours" : "Minutes"}
           keyboardType="numeric"
           value={String(isHours ? form.hours || "" : form.minutes || "")}
@@ -130,34 +131,13 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
   },
-  errorBox: {
-    borderWidth: 1,
-    borderColor: "#f87171",
-    backgroundColor: "#fee2e2",
-    borderRadius: 6,
-    padding: 10,
-    marginBottom: 12,
-  },
-  errorText: {
-    color: "#b91c1c",
-  },
   titleInput: {
-    borderWidth: 1,
-    borderColor: "#d1d5db",
     borderRadius: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    marginBottom: 12,
     fontSize: 16,
     textAlign: "center",
   },
   notesInput: {
-    borderWidth: 1,
-    borderColor: "#d1d5db",
     borderRadius: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    marginBottom: 12,
     textAlignVertical: "top",
   },
   timeRow: {
@@ -167,16 +147,12 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   timeInput: {
-    borderWidth: 1,
-    borderColor: "#d1d5db",
     borderRadius: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    marginBottom: 0, 
     width: 80,
   },
   timeLabel: {
     flex: 1,
-    fontSize: 14,
   },
   buttonRow: {
     flexDirection: "row",
