@@ -1,7 +1,8 @@
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { KeyboardAvoidingView, Platform, Pressable, Text, TextInput, View } from "react-native";
+import { commonStyles } from "../styles/common";
 
 export default function Login() {
 
@@ -39,20 +40,20 @@ export default function Login() {
       style={{ flex: 1 }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <View style={styles.container}>
-        <Text style={styles.title}>Taskwave</Text>
-        <Text style={styles.subtitle}>Login:</Text>
+      <View style={commonStyles.container}>
+        <Text style={commonStyles.title}>Taskwave</Text>
+        <Text style={commonStyles.subtitle}>Login:</Text>
 
         {errors.length > 0 && (
-          <View style={styles.errorBox}>
-            {errors.map(e => <Text key={e} style={styles.errorText}>{e}</Text>)}
+          <View style={commonStyles.errorBox}>
+            {errors.map(e => <Text key={e} style={commonStyles.errorText}>{e}</Text>)}
           </View>
         )}
 
-        <View style={styles.form}>
+        <View style={commonStyles.form}>
           <Text>Email address:</Text>
           <TextInput
-            style={styles.input}
+            style={commonStyles.input}
             id="email"
             onChangeText={setEmail}
             keyboardType="email-address"
@@ -61,18 +62,18 @@ export default function Login() {
           />
           <Text>Password:</Text>
           <TextInput
-            style={styles.input}
+            style={commonStyles.input}
             id="password"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
           />
-          <View style={styles.buttonRow}>
+          <View style={commonStyles.buttonRow}>
             <Pressable
-              style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
+              style={({ pressed }) => [commonStyles.button, pressed && commonStyles.buttonPressed]}
               onPress={handleSubmit}
             >
-              <Text style={styles.buttonText}>Login</Text>
+              <Text style={commonStyles.buttonText}>Login</Text>
             </Pressable>
             <Link href="/register">New User?</Link>
           </View>
@@ -81,34 +82,3 @@ export default function Login() {
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", alignItems: "center", padding: 16 },
-  title: { fontSize: 28, fontWeight: "bold", marginBottom: 4 },
-  subtitle: { fontSize: 18, marginBottom: 16 },
-  errorBox: { borderWidth: 1, borderColor: "#f87171", backgroundColor: "#fee2e2", borderRadius: 6, padding: 12, marginBottom: 12, width: "100%" },
-  errorText: { color: "#b91c1c" },
-  form: { width: "100%", borderWidth: 1, borderColor: "#d1d5db", borderRadius: 6, padding: 16 },
-  input: { borderWidth: 1, borderColor: "#d1d5db", borderRadius: 4, paddingHorizontal: 12, paddingVertical: 8, marginTop: 4, marginBottom: 16 },
-  buttonRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
-  button: {
-    alignSelf: "flex-start",
-    paddingLeft: 10,
-    paddingRight: 10,
-    height: 36,
-    borderRadius: 10,
-    boxShadow: "0px 0px 5px rgb(92, 195, 255)",
-    backgroundColor: "rgb(92, 195, 255)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  buttonPressed: {
-    boxShadow: "0px",
-    backgroundColor: "rgb(144, 214, 255)",
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 14,
-    fontWeight: "600",
-  },
-});

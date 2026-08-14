@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { commonStyles } from "../../styles/common";
 import { useAuth } from "../../contexts/AuthContext";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -51,13 +52,13 @@ export default function TabLayout() {
     <SafeAreaView style={{ flex: 1 }} >
       <View style={{ flexDirection: "row-reverse", gap: 8, padding: 12 }}>
         <Pressable
-          style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
+          style={({ pressed }) => [commonStyles.button, pressed && commonStyles.buttonPressed]}
           onPress={token ? handleLogout : handleLogin}
         >
-          <Text style={styles.authButtonText}>{token ? "Logout" : "Login"}</Text>
+          <Text style={commonStyles.buttonText}>{token ? "Logout" : "Login"}</Text>
         </Pressable>
         <Pressable
-          style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
+          style={({ pressed }) => [commonStyles.button, pressed && commonStyles.buttonPressed]}
           onPress={handleAddTask}
         >
           <Text style={styles.addButtonText}>+</Text>
@@ -79,31 +80,11 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
-  button: {
-    alignSelf: "flex-start",
-    paddingLeft: 10,
-    paddingRight: 10,
-    height: 36,
-    borderRadius: 10,
-    boxShadow: "0px 0px 5px rgb(92, 195, 255)",
-    backgroundColor: "rgb(92, 195, 255)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  buttonPressed: {
-    boxShadow: "0px",
-    backgroundColor: "rgb(144, 214, 255)",
-  },
   addButtonText: {
     color: "white",
     fontSize: 24,
     lineHeight: 28,
     fontWeight: "400",
-  },
-  authButtonText: {
-    color: "white",
-    fontSize: 14,
-    fontWeight: "600",
   },
   titleText: {
     fontSize: 24,

@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Link, useRouter } from "expo-router";
 import {
-  Button,
   KeyboardAvoidingView,
   Platform,
-  StyleSheet,
+  Pressable,
   Text,
   TextInput,
   View,
 } from "react-native";
+import { commonStyles } from "../styles/common";
 
 export default function Register() {
   const router = useRouter();
@@ -49,20 +49,20 @@ export default function Register() {
       style={{ flex: 1 }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <View style={styles.container}>
-        <Text style={styles.title}>Todo List</Text>
-        <Text style={styles.subtitle}>Register:</Text>
+      <View style={commonStyles.container}>
+        <Text style={commonStyles.title}>Taskwave</Text>
+        <Text style={commonStyles.subtitle}>Register:</Text>
 
         {errors.length > 0 && (
-          <View style={styles.errorBox}>
-            {errors.map(e => <Text key={e} style={styles.errorText}>{e}</Text>)}
+          <View style={commonStyles.errorBox}>
+            {errors.map(e => <Text key={e} style={commonStyles.errorText}>{e}</Text>)}
           </View>
         )}
 
-        <View style={styles.form}>
+        <View style={commonStyles.form}>
           <Text>Email address:</Text>
           <TextInput
-            style={styles.input}
+            style={commonStyles.input}
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
@@ -70,20 +70,25 @@ export default function Register() {
           />
           <Text>Password:</Text>
           <TextInput
-            style={styles.input}
+            style={commonStyles.input}
             value={password}
             onChangeText={setPassword}
             secureTextEntry
           />
           <Text>Confirm Password:</Text>
           <TextInput
-            style={styles.input}
+            style={commonStyles.input}
             value={confirmPassword}
             onChangeText={setConfirmPassword}
             secureTextEntry
           />
-          <View style={styles.buttonRow}>
-            <Button title="Register" onPress={handleSubmit} />
+          <View style={commonStyles.buttonRow}>
+            <Pressable
+              style={({ pressed }) => [commonStyles.button, pressed && commonStyles.buttonPressed]}
+              onPress={handleSubmit}
+            >
+              <Text style={commonStyles.buttonText}>Register</Text>
+            </Pressable>
             <Link href="/login">Returning User?</Link>
           </View>
         </View>
@@ -91,14 +96,3 @@ export default function Register() {
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", alignItems: "center", padding: 16 },
-  title: { fontSize: 28, fontWeight: "bold", marginBottom: 4 },
-  subtitle: { fontSize: 18, marginBottom: 16 },
-  errorBox: { borderWidth: 1, borderColor: "#f87171", backgroundColor: "#fee2e2", borderRadius: 6, padding: 12, marginBottom: 12, width: "100%" },
-  errorText: { color: "#b91c1c" },
-  form: { width: "100%", borderWidth: 1, borderColor: "#d1d5db", borderRadius: 6, padding: 16 },
-  input: { borderWidth: 1, borderColor: "#d1d5db", borderRadius: 4, paddingHorizontal: 12, paddingVertical: 8, marginTop: 4, marginBottom: 16 },
-  buttonRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
-});
