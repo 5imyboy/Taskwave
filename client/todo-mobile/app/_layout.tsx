@@ -2,6 +2,7 @@ import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { initDB } from "../lib/db";
 import { AuthProvider } from "../contexts/AuthContext";
+import { StatusBar } from "expo-status-bar";
 
 export default function RootLayout() {
   const [dbReady, setDbReady] = useState(false);
@@ -16,6 +17,7 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
+      <StatusBar style="dark" />
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ title: "Login" }} />
