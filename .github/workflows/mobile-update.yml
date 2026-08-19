@@ -1,0 +1,32 @@
+name: Mobile OTA Update
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'client/todo-mobile/**'
+      - '!client/todo-mobile/package-lock.json'
+      - '!client/todo-mobile/package.json'
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: client/todo-mobile/package-lock.json
+
+      - name: Install dependencies
+        working-directory: client/todo-mobile
+        run: npm ci
+
+      - name: Publish OTA update
+        working-directory: client/todo-mobile
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          COMMIT_MSG: ${{ github.event.head_commit.message }}
+        run: npx eas-cli update --platform android --channel production --message "$COMMIT_MSG" --non-interactive
