@@ -115,8 +115,8 @@ export default function TaskForm() {
       </View>
 
       <View style={styles.buttonRow}>
-        <Pressable style={[styles.button, styles.cancelButton]} onPress={() => router.back()}>
-          <Text style={styles.buttonText}>x</Text>
+        <Pressable style={({ pressed }) => [styles.button, commonStyles.deleteButton, pressed && commonStyles.deleteButtonPressed]} onPress={() => router.back()}>
+          <Text style={commonStyles.deleteButtonText}>x</Text>
         </Pressable>
         <Pressable style={[styles.button, styles.submitButton]} onPress={handleSubmit}>
           <Text style={styles.buttonText}>✓</Text>
@@ -163,9 +163,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 6,
     borderWidth: 1,
-  },
-  cancelButton: {
-    borderColor: "#f87171",
   },
   submitButton: {
     borderColor: "#4ade80",

@@ -9,6 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
 import { getNextStatus } from "../lib/taskStatus";
+import { commonStyles } from "../styles/common";
 
 export interface Task {
   taskId: number;
@@ -135,8 +136,10 @@ export default function TaskCard({
           <Pressable style={styles.button} onPress={() => handleStatusChange(true)}>
             <Text style={styles.buttonText}>→</Text>
           </Pressable>
-          <Pressable style={[styles.button, styles.deleteButton]} onPress={handleDelete}>
-            <Text style={styles.buttonText}>x</Text>
+          <Pressable
+            style={({ pressed }) => [styles.button, commonStyles.deleteButton, pressed && commonStyles.deleteButtonPressed]}
+            onPress={handleDelete}>
+            <Text style={[commonStyles.deleteButtonText]}>x</Text>
           </Pressable>
         </View>
       </Pressable>
@@ -178,14 +181,9 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   button: {
-    borderWidth: 1,
-    borderColor: "#d1d5db",
     borderRadius: 12,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-  },
-  deleteButton: {
-    borderColor: "#f87171",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
   buttonText: {
     fontWeight: "bold",
