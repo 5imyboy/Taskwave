@@ -55,6 +55,17 @@ export const commonStyles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
   },
+  deleteButton: {
+    borderWidth: 1,
+    borderColor: "rgb(30, 90, 150)",
+  },
+  deleteButtonPressed: {
+    backgroundColor: "rgba(30, 90, 150, .15)",
+  },
+  deleteButtonText: {   // separate from buttonText
+    color: "rgb(30, 90, 150)",
+    fontWeight: "bold",
+  },
 
   // error handling
   errorBox: {
