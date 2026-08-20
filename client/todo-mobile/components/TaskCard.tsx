@@ -10,6 +10,7 @@ import Animated, {
 import { scheduleOnRN } from "react-native-worklets";
 import { getNextStatus } from "../lib/taskStatus";
 import { commonStyles } from "../styles/common";
+import { WaveIcon } from "./WaveIcon";
 
 export interface Task {
   taskId: number;
@@ -129,15 +130,15 @@ export default function TaskCard({
         <Text style={styles.title}>{task.title}</Text>
         <Text style={styles.notes}>{task.description}</Text>
         <Text style={styles.time}>Time: {time}</Text>
-        <View style={styles.buttonRow}>
-          <Pressable style={styles.button} onPress={() => handleStatusChange(false)}>
-            <Text style={styles.buttonText}>←</Text>
+        <View style={commonStyles.editButtonRow}>
+          <Pressable style={({ pressed }) => [commonStyles.editButton, pressed && commonStyles.editButtonPressed]} onPress={() => handleStatusChange(false)}>
+            <WaveIcon mirrored={true} strokeWidth={100} />
           </Pressable>
-          <Pressable style={styles.button} onPress={() => handleStatusChange(true)}>
-            <Text style={styles.buttonText}>→</Text>
+          <Pressable style={({ pressed }) => [commonStyles.editButton, pressed && commonStyles.editButtonPressed]} onPress={() => handleStatusChange(true)}>
+            <WaveIcon strokeWidth={100} />
           </Pressable>
           <Pressable
-            style={({ pressed }) => [styles.button, commonStyles.deleteButton, pressed && commonStyles.deleteButtonPressed]}
+            style={({ pressed }) => [commonStyles.editButton, commonStyles.deleteButton, pressed && commonStyles.deleteButtonPressed]}
             onPress={handleDelete}>
             <Text style={[commonStyles.deleteButtonText]}>x</Text>
           </Pressable>
@@ -175,17 +176,5 @@ const styles = StyleSheet.create({
   time: {
     fontSize: 14,
     marginBottom: 8,
-  },
-  buttonRow: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  button: {
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-  },
-  buttonText: {
-    fontWeight: "bold",
   },
 });

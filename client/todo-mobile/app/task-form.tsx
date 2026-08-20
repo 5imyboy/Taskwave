@@ -114,12 +114,12 @@ export default function TaskForm() {
         <Switch value={isHours} onValueChange={toggleTimeUnit} />
       </View>
 
-      <View style={styles.buttonRow}>
-        <Pressable style={({ pressed }) => [styles.button, commonStyles.deleteButton, pressed && commonStyles.deleteButtonPressed]} onPress={() => router.back()}>
+      <View style={commonStyles.editButtonRow}>
+        <Pressable style={({ pressed }) => [commonStyles.editButton, commonStyles.deleteButton, pressed && commonStyles.deleteButtonPressed]} onPress={() => router.back()}>
           <Text style={commonStyles.deleteButtonText}>x</Text>
         </Pressable>
-        <Pressable style={[styles.button, styles.submitButton]} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>✓</Text>
+        <Pressable style={({ pressed }) => [commonStyles.editButton, pressed && commonStyles.editButtonPressed]} onPress={handleSubmit}>
+          <Text style={commonStyles.editButtonText}>✓</Text>
         </Pressable>
       </View>
 
@@ -153,21 +153,5 @@ const styles = StyleSheet.create({
   },
   timeLabel: {
     flex: 1,
-  },
-  buttonRow: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  button: {
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 6,
-    borderWidth: 1,
-  },
-  submitButton: {
-    borderColor: "#4ade80",
-  },
-  buttonText: {
-    fontWeight: "bold",
   },
 });

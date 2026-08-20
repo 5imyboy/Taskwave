@@ -55,15 +55,34 @@ export const commonStyles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
   },
+  editButton: {
+    borderRadius: 12,
+    borderWidth: 1.25,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderColor: "rgb(80, 160, 255)",
+  },
+  editButtonPressed: {
+    backgroundColor: "rgba(80, 160, 255, .15)",
+  },
+  editButtonText: {
+    color: "rgb(80, 160, 255)",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  editButtonRow: {
+    flexDirection: "row",
+    gap: 8,
+  },
   deleteButton: {
-    borderWidth: 1,
     borderColor: "rgb(30, 90, 150)",
   },
   deleteButtonPressed: {
     backgroundColor: "rgba(30, 90, 150, .15)",
   },
-  deleteButtonText: {   // separate from buttonText
+  deleteButtonText: {
     color: "rgb(30, 90, 150)",
+    fontSize: 18,
     fontWeight: "bold",
   },
 
