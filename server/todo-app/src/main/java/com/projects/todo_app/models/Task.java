@@ -82,6 +82,7 @@ public class Task {
         this.taskId = taskId;
     }
 
+    @Generated
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -89,6 +90,7 @@ public class Task {
         return taskId == task.taskId && hours == task.hours && minutes == task.minutes && Objects.equals(title, task.title) && Objects.equals(description, task.description) && status == task.status;
     }
 
+    @Generated
     @Override
     public int hashCode() {
         return Objects.hash(taskId, title, description, status, hours, minutes);

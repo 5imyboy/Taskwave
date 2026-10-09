@@ -55,6 +55,7 @@ public class User {
         this.password = password;
     }
 
+    @Generated
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -62,6 +63,7 @@ public class User {
         return userId == user.userId && Objects.equals(email, user.email);
     }
 
+    @Generated
     @Override
     public int hashCode() {
         return Objects.hash(userId, email);
