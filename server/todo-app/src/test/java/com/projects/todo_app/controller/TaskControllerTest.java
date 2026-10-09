@@ -125,6 +125,38 @@ class TaskControllerTest {
     }
 
     @Test
+    void shouldFindByEachStatus() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        String[] paths = {"not-started", "in-progress", "completed"};
+        Status[] statuses = {Status.NOT_STARTED, Status.IN_PROGRESS, Status.COMPLETED};
+
+        for (int i = 0; i < paths.length; i++) {
+            String result = mvc.perform(get("/api/task/status/" + paths[i])
+                            .cookie(new Cookie("token", token)))
+                    .andExpect(status().isOk())
+                    .andReturn().getResponse().getContentAsString();
+
+            Task[] tasks = mapper.readValue(result, Task[].class);
+            for (Task task : tasks) {
+                assertEquals(1, task.getUserId());
+                assertEquals(statuses[i], task.getStatus());
+            }
+        }
+    }
+
+    @Test
+    void shouldNotFindByInvalidStatus() throws Exception {
+        mvc.perform(get("/api/task/status/done")
+                        .cookie(new Cookie("token", token)))
+                .andExpect(status().isBadRequest());
+
+        // enum names are not accepted — only the hyphenated path form
+        mvc.perform(get("/api/task/status/COMPLETED")
+                        .cookie(new Cookie("token", token)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void shouldAdd() throws Exception {
         Task newTaskIn = new Task(0, 99, "Make Breakfast", "", Status.NOT_STARTED, 0, 20);
 

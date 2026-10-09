@@ -18,6 +18,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -69,6 +70,37 @@ class UserControllerTest {
     @Test
     void shouldNotFindMissingEmail() throws Exception {
         mvc.perform(get("/api/user/null@null.com")
+                        .cookie(new Cookie("token", token)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldDeleteUserAndCascadeTasks() throws Exception {
+        // use a throwaway user so other tests in this class keep users 1 and 2
+        String email = "deleteMe@email.com";
+        jdbcTemplate.update("insert into `user` (email, password_hash) values (?, ?);", email, "hash");
+        Integer userId = jdbcTemplate.queryForObject(
+                "select user_id from `user` where email = ?;", Integer.class, email);
+        jdbcTemplate.update(
+                "insert into task (user_id, title, `description`, `status`, hours, minutes) values (?, ?, '', 'NOT_STARTED', 0, 10);",
+                userId, "Task Owned By Deleted User");
+
+        String deleteToken = jwtConverter.getTokenFromUser(new User(email));
+        mvc.perform(delete("/api/user/delete/" + userId)
+                        .cookie(new Cookie("token", deleteToken)))
+                .andExpect(status().isNoContent());
+
+        Integer users = jdbcTemplate.queryForObject(
+                "select count(*) from `user` where user_id = ?;", Integer.class, userId);
+        Integer tasks = jdbcTemplate.queryForObject(
+                "select count(*) from task where user_id = ?;", Integer.class, userId);
+        assertEquals(0, users);
+        assertEquals(0, tasks);
+    }
+
+    @Test
+    void shouldNotDeleteMissingUser() throws Exception {
+        mvc.perform(delete("/api/user/delete/999")
                         .cookie(new Cookie("token", token)))
                 .andExpect(status().isNotFound());
     }

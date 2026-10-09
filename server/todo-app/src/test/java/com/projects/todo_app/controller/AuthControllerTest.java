@@ -76,6 +76,17 @@ class AuthControllerTest {
     }
 
     @Test
+    void shouldNotLoginWithUnknownEmail() throws Exception {
+        Map<String, String> credentials = Map.of("email", "nobody@email.com", "password", "password");
+        ObjectMapper mapper = new ObjectMapper();
+
+        mvc.perform(post("/api/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(credentials)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void shouldRegister() throws Exception {
         User newUser = new User(0, "newUser@email.com", "password");
         ObjectMapper mapper = new ObjectMapper();

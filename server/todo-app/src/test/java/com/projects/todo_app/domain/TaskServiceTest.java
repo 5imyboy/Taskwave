@@ -123,6 +123,23 @@ class TaskServiceTest {
     }
 
     @Test
+    void shouldNotUpdateDuplicateTitle() {
+        // task 3 is "Wake Up" — no other test in this class renames it
+        Task duplicate = new Task(2, 1, "Wake Up", "", Status.IN_PROGRESS, 0, 10);
+        Result<Task> actual = service.update(duplicate);
+        assertEquals(ResultType.INVALID, actual.getType());
+        assertTrue(actual.getMessages().contains("Title must be unique"));
+    }
+
+    @Test
+    void shouldUpdateKeepingOwnTitle() {
+        // a task's own title must not count as a duplicate of itself
+        Task sameTitle = new Task(3, 1, "Wake Up", "changed description", Status.COMPLETED, 0, 5);
+        Result<Task> actual = service.update(sameTitle);
+        assertEquals(ResultType.SUCCESS, actual.getType());
+    }
+
+    @Test
     void shouldNotUpdateMissingId() {
         Task missing = new Task(99, 1, "Missing Task", "", Status.NOT_STARTED, 0, 30);
         Result<Task> actual = service.update(missing);
