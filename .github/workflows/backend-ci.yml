@@ -12,20 +12,15 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:8
-        env:
-          MYSQL_ROOT_PASSWORD: root
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping -h localhost"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
     steps:
+      # The runner image ships with MySQL 8 (root/root), stopped by default.
+      # Using it avoids pulling mysql:8 from Docker Hub, which was timing out.
+      - name: Start MySQL
+        timeout-minutes: 2
+        run: |
+          sudo systemctl start mysql.service
+          until mysqladmin ping -h 127.0.0.1 -u root -proot --silent; do sleep 1; done
+
       - uses: actions/checkout@v4
 
       - name: Set up Java 21
