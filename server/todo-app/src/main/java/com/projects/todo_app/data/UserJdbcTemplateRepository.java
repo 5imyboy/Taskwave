@@ -45,13 +45,13 @@ public class UserJdbcTemplateRepository implements UserRepository {
         final String sql = "insert into `user` (email, password_hash) values (?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
-            int rowsAdded = jdbcTemplate.update((con) -> {
+            jdbcTemplate.update((con) -> {
                 PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 ps.setString(1, user.getEmail());
                 ps.setString(2, user.getPassword());
                 return ps;
             }, keyHolder);
-            if (rowsAdded <= 0 || keyHolder.getKey() == null) {
+            if (keyHolder.getKey() == null) {
                 return null;
             }
         } catch (DataAccessException ex) {

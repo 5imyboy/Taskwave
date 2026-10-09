@@ -68,7 +68,7 @@ public class TaskJdbcTemplateRepository implements TaskRepository {
         // preparedStatement: https://docs.spring.io/spring-framework/docs/4.3.x/spring-framework-reference/html/jdbc.html
         KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
-            int rowsAdded = jdbcTemplate.update((con) -> {
+            jdbcTemplate.update((con) -> {
                 PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 ps.setInt(1, task.getUserId());
                 ps.setString(2, task.getTitle());
@@ -78,7 +78,7 @@ public class TaskJdbcTemplateRepository implements TaskRepository {
                 ps.setInt(6, task.getMinutes());
                 return ps;
             }, keyHolder);
-            if (rowsAdded <= 0 || keyHolder.getKey() == null) {
+            if (keyHolder.getKey() == null) {
                 return null;
             }
         } catch (DataAccessException ex) {
