@@ -49,8 +49,9 @@ public class TaskService {
         }
 
         // I can't figure out how to use annotations to configure this piece of validation
-        if (!isTitleUnique(task.getTitle())) {
+        if (!isTitleUnique(task.getTitle(), task.getUserId())) {
             result.addErrorMessage("Title must be unique");
+            return result;
         }
 
         result.setPayLoad(repository.add(task));
@@ -70,7 +71,7 @@ public class TaskService {
             return result;
         }
 
-        if (!isTitleUnique(task.getTitle(), task.getTaskId())) {
+        if (!isTitleUnique(task.getTitle(), task.getUserId(), task.getTaskId())) {
             result.addErrorMessage("Title must be unique");
             return result;
         }
@@ -93,12 +94,13 @@ public class TaskService {
 
 
     // Validation helper functions
-    private boolean isTitleUnique(String title) {
-        return isTitleUnique(title, -1);
+    // Titles only need to be unique within one user's tasks (matches uq_task_user_title in the schema).
+    private boolean isTitleUnique(String title, int userId) {
+        return isTitleUnique(title, userId, -1);
     }
 
-    private boolean isTitleUnique(String title, int idToIgnore) {
-        List<Task> tasks = findAll();
+    private boolean isTitleUnique(String title, int userId, int idToIgnore) {
+        List<Task> tasks = findByUserId(userId);
         for (Task task: tasks) {
             if (task.getTaskId() == idToIgnore) continue;
             if (task.getTitle().equals(title)) {
