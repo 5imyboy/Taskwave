@@ -132,6 +132,28 @@ class TaskServiceTest {
     }
 
     @Test
+    void shouldAddSameTitleForDifferentUser() {
+        // user 1 has "Wake Up"; titles are unique per user, so user 2 may use it too
+        Task sameTitle = new Task(0, 2, "Wake Up", "", Status.NOT_STARTED, 0, 5);
+        try {
+            Result<Task> actual = service.add(sameTitle);
+            assertEquals(ResultType.SUCCESS, actual.getType());
+            assertNotNull(actual.getPayload());
+        } finally {
+            // keep auto_increment ids predictable for shouldAddUnique
+            jdbcTemplate.update("call set_good_known_state();");
+        }
+    }
+
+    @Test
+    void shouldNotAddDuplicateTitleForSameUser() {
+        Result<Task> actual = service.add(new Task(0, 1, "Wake Up", "", Status.NOT_STARTED, 0, 5));
+        assertEquals(ResultType.INVALID, actual.getType());
+        assertTrue(actual.getMessages().contains("Title must be unique"));
+        assertNull(actual.getPayload());
+    }
+
+    @Test
     void shouldUpdateKeepingOwnTitle() {
         // a task's own title must not count as a duplicate of itself
         Task sameTitle = new Task(3, 1, "Wake Up", "changed description", Status.COMPLETED, 0, 5);

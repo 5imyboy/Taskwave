@@ -57,6 +57,18 @@ class UserJdbcTemplateRepositoryTest {
     }
 
     @Test
+    void shouldNotAddDuplicateEmail() {
+        // the unique constraint on email is the last line of defence if two registrations race past UserService
+        User duplicate = new User(0, "testOne@email.com", "hash1234");
+        try {
+            assertNull(repository.add(duplicate));
+        } finally {
+            // a failed insert can still consume an auto_increment id, which would shift shouldAdd's expected id
+            jdbcTemplate.update("call set_good_known_state();");
+        }
+    }
+
+    @Test
     void shouldDelete() {
         assertTrue(repository.deleteById(2));
     }

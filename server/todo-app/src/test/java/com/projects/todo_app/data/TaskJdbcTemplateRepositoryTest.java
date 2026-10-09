@@ -107,6 +107,31 @@ class TaskJdbcTemplateRepositoryTest {
     }
 
     @Test
+    void shouldNotAddDuplicateTitleForSameUser() {
+        // user 1 already has "Wake Up" — the uq_task_user_title constraint rejects the insert
+        Task duplicate = new Task(0, 1, "Wake Up", "", Status.NOT_STARTED, 0, 5);
+        try {
+            assertNull(repository.add(duplicate));
+        } finally {
+            // a failed insert can still consume an auto_increment id, which would shift shouldAdd's expected id
+            jdbcTemplate.update("call set_good_known_state();");
+        }
+    }
+
+    @Test
+    void shouldAddSameTitleForDifferentUser() {
+        // user 2 can use a title that user 1 already has
+        Task sameTitle = new Task(0, 2, "Wake Up", "", Status.NOT_STARTED, 0, 5);
+        try {
+            Task actual = repository.add(sameTitle);
+            assertNotNull(actual);
+            assertEquals(2, actual.getUserId());
+        } finally {
+            jdbcTemplate.update("call set_good_known_state();");
+        }
+    }
+
+    @Test
     void shouldUpdate() {
         Task newTask = new Task(1, 1, "Wash Dishes", "", Status.NOT_STARTED, 0, 30);
         assertTrue(repository.update(newTask));
