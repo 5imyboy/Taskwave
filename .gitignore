@@ -1,0 +1,75 @@
+# Single .gitignore for the whole repo.
+
+##### Repo-wide #####
+
+# Notes and local AI tooling
+session-notes.txt
+CLAUDE.md
+.claude
+
+# OS and editors
+.DS_Store
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Dependencies and logs
+node_modules/
+npm-debug.*
+npm-debug.log*
+yarn-debug.*
+yarn-error.*
+.pnpm-debug.log*
+*.tsbuildinfo
+
+# Keys and certificates — never commit these
+*.pem
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+
+##### Backend — server/todo-app (Spring Boot, Maven) #####
+
+server/todo-app/target/
+server/todo-app/.vscode/
+
+# Contains DB credentials and JWT_SECRET
+server/todo-app/.env
+
+
+##### Web — client/todo-app (Next.js) #####
+
+client/todo-app/coverage/
+client/todo-app/.next/
+client/todo-app/out/
+client/todo-app/build/
+client/todo-app/.vercel
+client/todo-app/next-env.d.ts
+
+# All env files, including .env.local
+client/todo-app/.env*
+
+
+##### Mobile — client/todo-mobile (Expo) #####
+
+client/todo-mobile/.expo/
+client/todo-mobile/dist/
+client/todo-mobile/web-build/
+client/todo-mobile/expo-env.d.ts
+client/todo-mobile/.kotlin/
+client/todo-mobile/**/*.orig.*
+client/todo-mobile/.metro-health-check*
+client/todo-mobile/app-example
+client/todo-mobile/design-roadmap.txt
+
+# Generated native folders (created by `expo prebuild`)
+client/todo-mobile/ios/
+client/todo-mobile/android/
+
+# Local dev env only — .env.production is committed on purpose (public EXPO_PUBLIC_ values only)
+client/todo-mobile/.env
+client/todo-mobile/.env*.local
